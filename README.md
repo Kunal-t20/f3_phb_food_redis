@@ -28,8 +28,6 @@ https://f3-phb-food-redis-9bq9.vercel.app
 Backend API (Render)
 https://f3-phb-food-redis.onrender.com
 
-GitHub Repository
-https://github.com/Kunal-t20/f3_phb_food_redis
 
 ---
 
@@ -177,8 +175,7 @@ Delivery → Recipient
 ## 1 Clone Repository
 
 ```
-git clone https://github.com/Kunal-t20/f3_phb_food_redis.git
-cd project-folder
+git clone <>
 ```
 
 ---
