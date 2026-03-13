@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: 'https://f3-phb-food-redis.onrender.com/api',
+  baseURL: 'https://f3-phb-food-redis.onrender.com/api/api',
   headers: { 'Content-Type': 'application/json' },
 });
 
