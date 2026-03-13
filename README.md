@@ -18,6 +18,20 @@ The platform ensures:
 * Administrative **monitoring and control**
 
 ---
+---
+
+# Live Demo
+
+Frontend (Vercel)
+https://f3-phb-food-redis-9bq9.vercel.app
+
+Backend API (Render)
+https://f3-phb-food-redis.onrender.com
+
+GitHub Repository
+https://github.com/Kunal-t20/f3_phb_food_redis
+
+---
 
 # System Roles
 
@@ -74,54 +88,65 @@ Food Status → Delivered
 
 # Tech Stack
 
-## Backend
+### Frontend
 
-* FastAPI
-* Python
-* SQLAlchemy ORM
-* PostgreSQL
-* JWT Authentication
+- React
+- Vite
+- Axios
+- Tailwind CSS
 
-## Frontend
+### Backend
 
-* React
-* TailwindCSS
-* Axios API calls
+- FastAPI
+- SQLAlchemy
+- JWT Authentication
 
-## Infrastructure
+### Database
 
-* Docker (for PostgreSQL container)
-* REST API architecture
+- PostgreSQL
 
+### Deployment
+
+- Frontend → Vercel
+- Backend → Render
+- Database → Render PostgreSQL
 ---
 
 # Project Structure
 
 ```
-backend/
-│
-├── main.py
-├── database.py
-├── models.py
-├── schemas.py
-├── auth.py
-├── routers.py
-├── requirements.txt
-└── .env
+ Project Structure
 
-frontend/
+f3_phb_food_redis
 │
-└── src/
-     ├── components/
-     ├── router/
-     ├── context
-     ├── assets/
-     ├── pages/
-     ├── api/
-     ├── App.css
-     ├── App.jsx
-     ├── indes.css
-     └── main.jsx
+├── backend
+│   │
+│   ├── main.py
+│   ├── routers.py
+│   ├── models.py
+│   ├── schemas.py
+│   ├── database.py
+│   ├── auth.py
+│   ├── utils.py
+│   ├── create_admin.py
+│   └── requirements.txt
+│
+├── frontend
+│   │
+│   ├── public
+│   ├── src
+│   │   ├── api
+│   │   │   └── api.js
+│   │   ├── components
+│   │   ├── pages
+│   │   ├── App.jsx
+│   │   └── main.jsx
+│   │
+│   ├── index.html
+│   ├── package.json
+│   └── vite.config.js
+│
+└── README.md
 ```
 
 ---
