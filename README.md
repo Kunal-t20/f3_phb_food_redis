@@ -152,7 +152,7 @@ Delivery → Recipient
 ## 1 Clone Repository
 
 ```
-git clone <repository-url>
+git clone https://github.com/Kunal-t20/f3_phb_food_redis.git
 cd project-folder
 ```
 
@@ -187,7 +187,7 @@ pip install -r requirements.txt
 Create `.env`
 
 ```
-DATABASE_URL=postgresql://admin:admin123@localhost:5000/food_redis_db
+DATABASE_URL=<"">
 SECRET_KEY=your_secret_key
 ADMIN_SECRET_CODE=admin_code
 ```
