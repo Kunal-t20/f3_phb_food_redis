@@ -36,10 +36,10 @@ export default function Register() {
             <div className="auth-card">
                 <div className="auth-logo">
                     <div className="auth-logo-icon">🍱</div>
-                    <h1>FoodShare</h1>
+                    <h1>Hunger Relief Network</h1>
                 </div>
                 <h2 className="auth-title">Create account</h2>
-                <p className="auth-sub">Join the food redistribution network</p>
+                <p className="auth-sub">Join the hunger relief network</p>
 
                 {error && (
                     <div className="alert alert-error">

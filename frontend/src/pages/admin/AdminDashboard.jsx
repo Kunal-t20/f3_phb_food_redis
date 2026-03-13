@@ -73,6 +73,7 @@ export default function AdminDashboard() {
         'Pending': 'badge badge-pending',
         'Assigned': 'badge badge-approved',
         'Delivered': 'badge badge-delivered',
+        'Received': 'badge badge-approved',
     };
 
     return (
@@ -86,7 +87,7 @@ export default function AdminDashboard() {
                 <div className="page-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
                     <div>
                         <h1>Admin <span className="header-accent">Dashboard</span></h1>
-                        <p>Manage users and monitor the food redistribution system</p>
+                        <p>Manage users and monitor the hunger relief network</p>
                     </div>
                     <button className="btn btn-ghost btn-sm" onClick={() => { fetchUsers(); fetchDeliveries(); }}>
                         <RefreshCw size={14} /> Refresh

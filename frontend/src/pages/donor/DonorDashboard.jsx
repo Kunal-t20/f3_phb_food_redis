@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import Sidebar from '../../components/Sidebar';
-import { donateFood, getDonorDonations, deleteDonation } from '../../api/api';
+import { donateFood, getDonorDonations, deleteDonation, markDelivered } from '../../api/api';
 import { Heart, PlusCircle, Trash2, AlertCircle, Package, RefreshCw } from 'lucide-react';
 
 const NAV = [{ to: '/donor', label: 'My Donations', icon: <Heart size={18} /> }];
@@ -11,6 +11,7 @@ const STATUS_BADGE = {
     'Approved': 'badge badge-approved',
     'Rejected': 'badge badge-rejected',
     'Claimed': 'badge badge-claimed',
+    'Delivered': 'badge badge-approved',
 };
 
 export default function DonorDashboard() {
@@ -75,6 +76,17 @@ export default function DonorDashboard() {
             fetchDonations();           // ← re-fetch from server
         } catch (e) {
             flash(e.response?.data?.detail || 'Cannot delete this donation', 'error');
+        }
+    };
+
+    // ── Mark Delivered (only Claimed) ────────────────────────────────────────
+    const handleMarkDelivered = async (id) => {
+        try {
+            await markDelivered(id);
+            flash('Marked as delivered! ✅');
+            fetchDonations();           // ← re-fetch from server
+        } catch (e) {
+            flash(e.response?.data?.detail || 'Failed to mark as delivered', 'error');
         }
     };
 
@@ -221,6 +233,14 @@ export default function DonorDashboard() {
                                                     <button className="btn btn-danger btn-sm" onClick={() => handleDelete(d.id)}>
                                                         <Trash2 size={13} /> Remove
                                                     </button>
+                                                )}
+                                                {d.status === 'Claimed' && (
+                                                    <button className="btn btn-primary btn-sm" onClick={() => handleMarkDelivered(d.id)}>
+                                                        <Heart size={13} /> Mark Delivered
+                                                    </button>
+                                                )}
+                                                {d.status === 'Delivered' && (
+                                                    <span className="badge badge-approved">✔ Delivered</span>
                                                 )}
                                             </td>
                                         </tr>

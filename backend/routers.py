@@ -18,7 +18,9 @@ router = APIRouter(prefix="/api")
 @router.post("/register", response_model=schemas.UserResponse)
 def register(user: schemas.UserCreate, db: Session = Depends(get_db)):
 
-    existing = db.query(models.User).filter(models.User.email == user.email).first()
+    existing = db.query(models.User).filter(
+        models.User.email == user.email
+    ).first()
 
     if existing:
         raise HTTPException(status_code=400, detail="Email already registered")
@@ -44,7 +46,9 @@ def register(user: schemas.UserCreate, db: Session = Depends(get_db)):
 @router.post("/login")
 def login(user: schemas.UserLogin, db: Session = Depends(get_db)):
 
-    db_user = db.query(models.User).filter(models.User.email == user.email).first()
+    db_user = db.query(models.User).filter(
+        models.User.email == user.email
+    ).first()
 
     if not db_user:
         raise HTTPException(status_code=401, detail="Invalid credentials")
@@ -201,6 +205,23 @@ def inspection_history(
     return records
 
 
+# ---------------- INSPECTOR CLEAR HISTORY ----------------
+
+@router.delete("/inspector/history/clear")
+def clear_inspection_history(
+    db: Session = Depends(get_db),
+    current_user = Depends(require_role("inspector"))
+):
+
+    db.query(models.InspectionRecord).filter(
+        models.InspectionRecord.inspector_id == current_user.id
+    ).delete()
+
+    db.commit()
+
+    return {"message": "Inspection history cleared"}
+
+
 # ---------------- RECIPIENT VIEW APPROVED FOOD ----------------
 
 @router.get("/recipient/foods", response_model=list[schemas.FoodResponse])
@@ -239,7 +260,8 @@ def claim_food(
         food_item_id=food_id,
         recipient_id=current_user.id,
         pickup_latitude=food.latitude,
-        pickup_longitude=food.longitude
+        pickup_longitude=food.longitude,
+        delivery_status="Pending"
     )
 
     food.status = "Claimed"
@@ -252,6 +274,78 @@ def claim_food(
         "message": "Food claimed successfully",
         "delivery_id": delivery.id
     }
+
+
+# ---------------- DONOR MARK DELIVERY COMPLETE ----------------
+
+@router.post("/donor/delivered/{food_id}")
+def mark_delivered(
+    food_id: int,
+    db: Session = Depends(get_db),
+    current_user = Depends(require_role("donor"))
+):
+
+    food = db.query(models.FoodItem).filter(
+        models.FoodItem.id == food_id,
+        models.FoodItem.donor_id == current_user.id
+    ).first()
+
+    if not food:
+        raise HTTPException(status_code=404, detail="Food not found")
+
+    if food.status != "Claimed":
+        raise HTTPException(
+            status_code=400,
+            detail="Food must be claimed first"
+        )
+
+    delivery = db.query(models.Delivery).filter(
+        models.Delivery.food_item_id == food_id
+    ).first()
+
+    if not delivery:
+        raise HTTPException(status_code=404, detail="Delivery not found")
+
+    delivery.delivery_status = "Delivered"
+    food.status = "Delivered"
+
+    db.commit()
+
+    return {"message": "Delivery completed"}
+
+
+# ---------------- RECIPIENT CONFIRM RECEIVED ----------------
+
+@router.post("/recipient/received/{food_id}")
+def confirm_received(
+    food_id: int,
+    db: Session = Depends(get_db),
+    current_user = Depends(require_role("recipient"))
+):
+
+    delivery = db.query(models.Delivery).filter(
+        models.Delivery.food_item_id == food_id,
+        models.Delivery.recipient_id == current_user.id,
+        models.Delivery.delivery_status == "Delivered"
+    ).first()
+
+    if not delivery:
+        raise HTTPException(
+            status_code=404,
+            detail="No delivered delivery found for this food item"
+        )
+
+    food = db.query(models.FoodItem).filter(
+        models.FoodItem.id == food_id
+    ).first()
+
+    if food:
+        food.status = "Received"
+
+    delivery.delivery_status = "Received"
+    db.commit()
+
+    return {"message": "Delivery confirmed as received"}
 
 
 # ---------------- RECIPIENT CLAIM HISTORY ----------------
@@ -334,6 +428,8 @@ def admin_deliveries(
     current_user = Depends(require_role("admin"))
 ):
 
-    deliveries = db.query(models.Delivery).all()
+    deliveries = db.query(models.Delivery).order_by(
+        models.Delivery.id.desc()
+    ).all()
 
     return deliveries

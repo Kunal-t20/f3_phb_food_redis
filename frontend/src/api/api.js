@@ -22,10 +22,12 @@ export const registerUser = (data) => api.post('/register', data);
 export const donateFood = (data) => api.post('/donor/donate', data);
 export const getDonorDonations = () => api.get('/donor/my-donations');
 export const deleteDonation = (id) => api.delete(`/donor/food/${id}`);
+export const markDelivered = (foodId) => api.post(`/donor/delivered/${foodId}`);
 
 // ---- INSPECTOR ----
 export const getInspectorPending = () => api.get('/inspector/pending');
 export const getInspectorHistory = () => api.get('/inspector/history');
+export const clearInspectorHistory = () => api.delete('/inspector/history/clear');
 export const inspectFood = (foodId, data) => api.post(`/inspect/${foodId}`, data);
 
 // ---- RECIPIENT ----
@@ -33,6 +35,7 @@ export const getAvailableFoods = (skip = 0, limit = 50) =>
   api.get('/recipient/foods', { params: { skip, limit } });
 export const claimFood = (foodId) => api.post(`/claim/${foodId}`);
 export const getRecipientClaims = () => api.get('/recipient/my-claims');
+export const confirmReceived = (foodId) => api.post(`/recipient/received/${foodId}`);
 
 // ---- ADMIN ----
 export const getUsers = () => api.get('/admin/users');

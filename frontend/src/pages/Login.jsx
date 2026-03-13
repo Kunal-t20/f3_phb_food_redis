@@ -28,7 +28,7 @@ export default function Login() {
             <div className="auth-card">
                 <div className="auth-logo">
                     <div className="auth-logo-icon">🍱</div>
-                    <h1>FoodShare</h1>
+                    <h1>Hunger Relief Network</h1>
                 </div>
                 <h2 className="auth-title">Welcome back</h2>
                 <p className="auth-sub">Sign in to your account to continue</p>

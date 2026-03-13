@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import Sidebar from '../../components/Sidebar';
-import { getAvailableFoods, claimFood, getRecipientClaims } from '../../api/api';
+import { getAvailableFoods, claimFood, getRecipientClaims, confirmReceived } from '../../api/api';
 import { ShoppingBag, Utensils, CheckCircle, AlertCircle, RefreshCw, ClipboardList } from 'lucide-react';
 
 const NAV = [{ to: '/recipient', label: 'Available Food', icon: <ShoppingBag size={18} /> }];
@@ -66,6 +66,17 @@ export default function RecipientDashboard() {
         }
     };
 
+    // ── Confirm Received (only after Delivered) ──────────────────────────
+    const handleConfirmReceived = async (claim) => {
+        try {
+            await confirmReceived(claim.food_item_id);
+            flash(`Food #${claim.food_item_id} confirmed as received! ✅`);
+            fetchClaims();
+        } catch (e) {
+            flash(e.response?.data?.detail || 'Failed to confirm receipt', 'error');
+        }
+    };
+
     const getCategoryEmoji = (cat) => {
         const m = { edible: '🍽️', packaged: '📦', cooked: '🍲', raw: '🥦', beverages: '🥤' };
         return m[cat] || '🍱';
@@ -81,6 +92,7 @@ export default function RecipientDashboard() {
         'Pending': 'badge badge-pending',
         'Delivered': 'badge badge-approved',
         'Claimed': 'badge badge-claimed',
+        'Received': 'badge badge-approved',
     };
 
     return (
@@ -210,6 +222,7 @@ export default function RecipientDashboard() {
                                         <th>Pickup Location</th>
                                         <th>Status</th>
                                         <th>Requested At</th>
+                                        <th>Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -227,6 +240,19 @@ export default function RecipientDashboard() {
                                             </td>
                                             <td style={{ color: 'var(--text-muted)', fontSize: '0.8rem' }}>
                                                 {new Date(c.requested_at).toLocaleString()}
+                                            </td>
+                                            <td>
+                                                {c.delivery_status === 'Delivered' && (
+                                                    <button
+                                                        className="btn btn-primary btn-sm"
+                                                        onClick={() => handleConfirmReceived(c)}
+                                                    >
+                                                        ✋ Confirm Received
+                                                    </button>
+                                                )}
+                                                {c.delivery_status === 'Received' && (
+                                                    <span className="badge badge-approved">✔ Received</span>
+                                                )}
                                             </td>
                                         </tr>
                                     ))}

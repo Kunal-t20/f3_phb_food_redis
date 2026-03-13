@@ -1,8 +1,8 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import Sidebar from '../../components/Sidebar';
-import { getInspectorPending, getInspectorHistory, inspectFood } from '../../api/api';
-import { ClipboardCheck, CheckCircle, XCircle, AlertCircle, RefreshCw } from 'lucide-react';
+import { getInspectorPending, getInspectorHistory, inspectFood, clearInspectorHistory } from '../../api/api';
+import { ClipboardCheck, CheckCircle, XCircle, AlertCircle, RefreshCw, Trash2 } from 'lucide-react';
 
 const NAV = [{ to: '/inspector', label: 'Inspect Food', icon: <ClipboardCheck size={18} /> }];
 
@@ -72,6 +72,17 @@ export default function InspectorDashboard() {
     const getCategoryEmoji = (cat) => {
         const m = { edible: '🍽️', packaged: '📦', cooked: '🍲', raw: '🥦', beverages: '🥤' };
         return m[cat] || '🍱';
+    };
+
+    const handleClearHistory = async () => {
+        if (!window.confirm('Are you sure you want to clear your inspection history? This cannot be undone.')) return;
+        try {
+            await clearInspectorHistory();
+            flash('Inspection history cleared successfully');
+            fetchHistory();
+        } catch (e) {
+            flash(e.response?.data?.detail || 'Failed to clear history', 'error');
+        }
     };
 
     return (
@@ -206,38 +217,41 @@ export default function InspectorDashboard() {
                 </div>
 
                 {/* ── Inspection History ── */}
-                {history.length > 0 && (
-                    <div className="card">
-                        <div className="card-header"><h2>📋 Inspection History</h2></div>
-                        <div className="table-wrapper">
-                            <table>
-                                <thead>
-                                    <tr>
-                                        <th>Record ID</th><th>Food ID</th><th>Result</th>
-                                        <th>Remarks</th><th>Inspected At</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {history.map(h => (
-                                        <tr key={h.id}>
-                                            <td style={{ color: 'var(--text-muted)', fontSize: '0.8rem' }}>#{h.id}</td>
-                                            <td style={{ fontWeight: 600 }}>#{h.food_item_id}</td>
-                                            <td>
-                                                <span className={`badge ${h.result === 'Approved' ? 'badge-approved' : 'badge-rejected'}`}>
-                                                    {h.result}
-                                                </span>
-                                            </td>
-                                            <td style={{ color: 'var(--text-muted)' }}>{h.remarks || '—'}</td>
-                                            <td style={{ color: 'var(--text-muted)', fontSize: '0.8rem' }}>
-                                                {new Date(h.inspected_at).toLocaleString()}
-                                            </td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
-                        </div>
+                <div className="card">
+                    <div className="card-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                        <h2>📋 Inspection History</h2>
+                        <button className="btn btn-danger btn-sm" onClick={handleClearHistory}>
+                            <Trash2 size={13} /> Clear History
+                        </button>
                     </div>
-                )}
+                    <div className="table-wrapper">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Record ID</th><th>Food ID</th><th>Result</th>
+                                    <th>Remarks</th><th>Inspected At</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {history.map(h => (
+                                    <tr key={h.id}>
+                                        <td style={{ color: 'var(--text-muted)', fontSize: '0.8rem' }}>#{h.id}</td>
+                                        <td style={{ fontWeight: 600 }}>#{h.food_item_id}</td>
+                                        <td>
+                                            <span className={`badge ${h.result === 'Approved' ? 'badge-approved' : 'badge-rejected'}`}>
+                                                {h.result}
+                                            </span>
+                                        </td>
+                                        <td style={{ color: 'var(--text-muted)' }}>{h.remarks || '—'}</td>
+                                        <td style={{ color: 'var(--text-muted)', fontSize: '0.8rem' }}>
+                                            {new Date(h.inspected_at).toLocaleString()}
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </main>
         </div>
     );

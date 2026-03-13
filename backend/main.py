@@ -9,7 +9,7 @@ import models
 models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI(
-    title="Food Redistribution System",
+    title="Hunger Relief Network",
     description="API for food donation, inspection and distribution",
     version="1.0.0"
 )
@@ -29,4 +29,4 @@ app.include_router(router, prefix="/api")
 
 @app.get("/")
 def root():
-    return {"message": "Food Redistribution API running"}
+    return {"message": "Hunger Relief Network API running"}

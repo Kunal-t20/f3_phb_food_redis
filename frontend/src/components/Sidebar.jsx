@@ -17,8 +17,8 @@ export default function Sidebar({ links, roleClass, roleLabel, roleIcon, userNam
             <div className="sidebar-logo">
                 <div className="sidebar-logo-icon">{roleIcon}</div>
                 <div>
-                    <h2>FoodShare</h2>
-                    <span>Food Redistribution</span>
+                    <h2>Hunger Relief</h2>
+                    <span>Network</span>
                 </div>
             </div>
 
