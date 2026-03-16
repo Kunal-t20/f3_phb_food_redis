@@ -175,7 +175,7 @@ Delivery → Recipient
 ## 1 Clone Repository
 
 ```
-git clone <>
+git clone https://github.com/Kunal-t20/f3_phb_food_redis.git
 ```
 
 ---
