@@ -23,7 +23,7 @@ The platform ensures:
 # Live Demo
 
 Frontend (Vercel)
-https://f3-phb-food-redis-9bq9.vercel.app
+https://hungerreliefnetwoek.vercel.app
 
 Backend API (Render)
 https://f3-phb-food-redis.onrender.com
